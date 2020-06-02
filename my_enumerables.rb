@@ -74,4 +74,43 @@ module Enumerable
     end
     output
   end
+
+  def my_none?(array)
+    array_size = array.length
+
+    block_return = Hash.new
+    i = 0
+    while i < array_size do
+      yield_value = yield array[i]
+      if block_return[yield_value] 
+        block_return[yield_value] += 1
+      else
+        block_return[yield_value] = 1
+      end
+      i += 1
+    end
+
+    if block_return[true] == nil
+      true
+    else
+      false
+    end
+  end
+
+  def my_count(array)
+    array_size = array.length
+
+    block_return = Hash.new
+    i = 0
+    while i < array_size do
+      yield_value = yield array[i]
+      if block_return[yield_value] 
+        block_return[yield_value] += 1
+      else
+        block_return[yield_value] = 1
+      end
+      i += 1
+    end
+    block_return[true].to_i
+  end
 end
