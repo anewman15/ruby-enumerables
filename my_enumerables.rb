@@ -1,48 +1,48 @@
 module Enumerable
   def my_each
-    array_copy = []
-    array_size = self.length
+    modified_object = []
+    object_size = self.length
 
     i = 0
-    while i < array_size do
-      array_copy << (yield self[i])
+    while i < object_size do
+      modified_object << (yield self[i])
       i += 1
     end
     self
   end
 
   def my_each_with_index
-    array_copy = []
-    array_size = self.length
+    modified_object = []
+    object_size = self.length
 
     i = 0
-    while i < array_size do
-      array_copy << (yield self[i], i)
+    while i < object_size do
+      modified_object << (yield self[i], i)
       i += 1
     end
     self
   end
 
   def my_select
-    array_selected = []
-    array_size = self.length
+    modified_object = []
+    object_size = self.length
 
     i = 0
-    while i < array_size do
+    while i < object_size do
       if (yield self[i]) == true
-        array_selected << self[i]
+        modified_object << self[i]
       end
       i += 1
     end
-    array_selected
+    modified_object
   end
 
   def my_all?
-    array_size = self.length
+    object_size = self.length
 
     block_return = Hash.new
     i = 0
-    while i < array_size do
+    while i < object_size do
       yield_value = yield self[i]
       if block_return[yield_value] 
         block_return[yield_value] += 1
@@ -52,7 +52,7 @@ module Enumerable
       i += 1
     end
 
-    if block_return[true] == array_size
+    if block_return[true] == object_size
       true
     else
       false
@@ -60,10 +60,10 @@ module Enumerable
   end
 
   def my_any?
-    array_size = self.length
+    object_size = self.length
 
     i = 0
-    while i < array_size do
+    while i < object_size do
       if yield self[i]
         output = true
         break
@@ -76,11 +76,11 @@ module Enumerable
   end
 
   def my_none?
-    array_size = self.length
+    object_size = self.length
 
     block_return = Hash.new
     i = 0
-    while i < array_size do
+    while i < object_size do
       yield_value = yield self[i]
       if block_return[yield_value] 
         block_return[yield_value] += 1
@@ -98,11 +98,11 @@ module Enumerable
   end
 
   def my_count
-    array_size = self.length
+    object_size = self.length
 
     block_return = Hash.new
     i = 0
-    while i < array_size do
+    while i < object_size do
       yield_value = yield self[i]
       if block_return[yield_value] 
         block_return[yield_value] += 1
@@ -112,5 +112,17 @@ module Enumerable
       i += 1
     end
     block_return[true].to_i
+  end
+
+  def my_map
+    modified_object = []
+    object_size = self.length
+
+    i = 0
+    while i < object_size do
+      modified_object << (yield self[i])
+      i += 1
+    end
+    modified_object
   end
 end
