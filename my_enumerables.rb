@@ -1,49 +1,49 @@
 module Enumerable
-  def my_each(array)
+  def my_each
     array_copy = []
-    array_size = array.length
+    array_size = self.length
 
     i = 0
     while i < array_size do
-      array_copy << (yield array[i])
+      array_copy << (yield self[i])
       i += 1
     end
-    array
+    self
   end
 
-  def my_each_with_index(array)
+  def my_each_with_index
     array_copy = []
-    array_size = array.length
+    array_size = self.length
 
     i = 0
     while i < array_size do
-      array_copy << (yield array[i], i)
+      array_copy << (yield self[i], i)
       i += 1
     end
-    array
+    self
   end
 
-  def my_select(array)
-    array_copy = []
-    array_size = array.length
+  def my_select
+    array_selected = []
+    array_size = self.length
 
     i = 0
     while i < array_size do
-      if (yield array[i]) == true
-        array_copy << array[i]
+      if (yield self[i]) == true
+        array_selected << self[i]
       end
       i += 1
     end
-    array_copy
+    array_selected
   end
 
-  def my_all?(array)
-    array_size = array.length
+  def my_all?
+    array_size = self.length
 
     block_return = Hash.new
     i = 0
     while i < array_size do
-      yield_value = yield array[i]
+      yield_value = yield self[i]
       if block_return[yield_value] 
         block_return[yield_value] += 1
       else
@@ -59,12 +59,12 @@ module Enumerable
     end
   end
 
-  def my_any?(array)
-    array_size = array.length
+  def my_any?
+    array_size = self.length
 
     i = 0
     while i < array_size do
-      if yield array[i]
+      if yield self[i]
         output = true
         break
       else
@@ -75,13 +75,13 @@ module Enumerable
     output
   end
 
-  def my_none?(array)
-    array_size = array.length
+  def my_none?
+    array_size = self.length
 
     block_return = Hash.new
     i = 0
     while i < array_size do
-      yield_value = yield array[i]
+      yield_value = yield self[i]
       if block_return[yield_value] 
         block_return[yield_value] += 1
       else
@@ -97,13 +97,13 @@ module Enumerable
     end
   end
 
-  def my_count(array)
-    array_size = array.length
+  def my_count
+    array_size = self.length
 
     block_return = Hash.new
     i = 0
     while i < array_size do
-      yield_value = yield array[i]
+      yield_value = yield self[i]
       if block_return[yield_value] 
         block_return[yield_value] += 1
       else
