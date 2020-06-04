@@ -1,40 +1,49 @@
 module Enumerable
   def my_each
     modified_object = []
-    object_size = self.length
 
     i = 0
-    while i < object_size do
-      modified_object << (yield self[i])
-      i += 1
+    if block_given?
+      while i < length do
+        modified_object << (yield self[i])
+        i += 1
+      end
+      self
+    else
+      to_enum
     end
-    self
   end
 
   def my_each_with_index
     modified_object = []
-    object_size = self.length
 
     i = 0
-    while i < object_size do
-      modified_object << (yield self[i], i)
-      i += 1
+    if block_given?
+      while i < length do
+        modified_object << (yield self[i], i)
+        i += 1
+      end
+      self
+    else
+      to_enum
     end
-    self
   end
 
   def my_select
     modified_object = []
-    object_size = self.length
 
     i = 0
-    while i < object_size do
-      if (yield self[i]) == true
-        modified_object << self[i]
+    if block_given?
+      while i < length do
+        if (yield self[i]) == true
+          modified_object << self[i]
+        end
+        i += 1
       end
-      i += 1
+      modified_object
+    else
+      to_enum
     end
-    modified_object
   end
 
   def my_all?
@@ -152,8 +161,21 @@ module Enumerable
         modified_object << a_proc.call(self[i])
         i += 1
       end
-    else
-      while i < length do
+    end
+    modified_object
+  end
+
+  def my_map_proc_block(a_proc = nil)
+    modified_object = []
+
+    i = 0
+    if a_proc
+      while i < length
+        modified_object << a_proc.call(self[i])
+        i += 1
+      end
+    elsif block_given?
+      while i < length
         modified_object << (yield self[i])
         i += 1
       end
