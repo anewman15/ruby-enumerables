@@ -46,26 +46,44 @@ module Enumerable
     end
   end
 
-  def my_all?
-    object_size = self.length
-
-    block_return = Hash.new
-    i = 0
-    while i < object_size do
-      yield_value = yield self[i]
-      if block_return[yield_value] 
-        block_return[yield_value] += 1
-      else
-        block_return[yield_value] = 1
+  def my_all?(pattern = nil)
+    decision = true if length == 0
+    
+    i = 0 
+    if block_given?
+      while i < length do
+        unless yield self[i]
+          decision = false
+          break
+        else
+          decision = true
+          i += 1
+        end
       end
-      i += 1
-    end
-
-    if block_return[true] == object_size
-      true
+    elsif !block_given? && pattern
+      while i < length do
+        unless pattern === self[i]
+          decision = false
+          break
+        else
+          decision = true
+          i += 1
+        end
+      end
+    elsif !block_given? && !pattern
+      while i < length do
+        unless self[i] 
+          decision = false
+          break
+        else
+          decision = true
+          i += 1
+        end
+      end
     else
-      false
+      decision = true
     end
+    decision
   end
 
   def my_any?
