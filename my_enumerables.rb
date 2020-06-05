@@ -47,8 +47,8 @@ module Enumerable
   end
 
   def my_all?(pattern = nil)
-    decision = true if length == 0
-    
+    decision = true if length == 0 
+
     i = 0 
     if block_given?
       while i < length do
@@ -86,59 +86,113 @@ module Enumerable
     decision
   end
 
-  def my_any?
-    object_size = self.length
+  def my_any?(pattern = nil)
+    decision = false if length == 0 
 
-    i = 0
-    while i < object_size do
-      if yield self[i]
-        output = true
-        break
-      else
-        output = false
+    i = 0 
+    if block_given?
+      while i < length do
+        if yield self[i]
+          decision = true
+          break
+        else
+          decision = false
+          i += 1
+        end
       end
-      i += 1
-    end
-    output
-  end
-
-  def my_none?
-    object_size = self.length
-
-    block_return = Hash.new
-    i = 0
-    while i < object_size do
-      yield_value = yield self[i]
-      if block_return[yield_value] 
-        block_return[yield_value] += 1
-      else
-        block_return[yield_value] = 1
+    elsif !block_given? && pattern
+      while i < length do
+        if pattern === self[i]
+          decision = true
+          break
+        else
+          decision = false
+          i += 1
+        end
       end
-      i += 1
-    end
-
-    if block_return[true] == nil
-      true
+    elsif !block_given? && !pattern
+      while i < length do
+        if self[i] 
+          decision = true
+          break
+        else
+          decision = false
+          i += 1
+        end
+      end
     else
-      false
+      decision = true
     end
+    decision
   end
 
-  def my_count
-    object_size = self.length
+  def my_none?(pattern = nil)
+    decision = true if length == 0 
 
-    block_return = Hash.new
-    i = 0
-    while i < object_size do
-      yield_value = yield self[i]
-      if block_return[yield_value] 
-        block_return[yield_value] += 1
-      else
-        block_return[yield_value] = 1
+    i = 0 
+    if block_given?
+      while i < length do
+        if yield self[i]
+          decision = false
+          break
+        else
+          decision = true
+          i += 1
+        end
       end
-      i += 1
+    elsif !block_given? && pattern
+      while i < length do
+        if pattern === self[i]
+          decision = false
+          break
+        else
+          decision = true
+          i += 1
+        end
+      end
+    elsif !block_given? && !pattern
+      while i < length do
+        if self[i] 
+          decision = false
+          break
+        else
+          decision = true
+          i += 1
+        end
+      end
+    else
+      decision = true
     end
-    block_return[true].to_i
+    decision
+  end
+
+  def my_count(value = nil)
+    
+    i = 0
+    counter = 0
+    if block_given?
+      while i < length do
+        if yield self[i]
+          counter += 1
+        else
+          counter
+        end
+        i += 1
+      end
+      counter
+    elsif !block_given? && value
+      while i < length do
+        if self[i] == value
+          counter += 1
+        else
+          counter
+        end
+        i += 1
+      end
+      counter
+    else
+      length
+    end
   end
 
   def my_map
