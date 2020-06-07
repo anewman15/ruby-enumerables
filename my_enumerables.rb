@@ -46,42 +46,26 @@ module Enumerable
 
   def my_all?(pattern = nil)
     decision = true if length.zero?
-
+    selected_array = []
     i = 0
     if block_given?
-      while i < length
-        unless yield self[i]
-          decision = false
-          break
-        else
-          decision = true
-          i += 1
-        end
-      end
+      selected_array = my_select { |element| yield element }
     elsif !block_given? && pattern
       while i < length
-        unless pattern === self[i]
-          decision = false
-          break
-        else
-          decision = true
-          i += 1
-        end
+        selected_array << self[i] if pattern === self[i]
+        i += 1
       end
     elsif !block_given? && !pattern
       while i < length
-        unless self[i]
-          decision = false
-          break
-        else
-          decision = true
-          i += 1
-        end
+        selected_array << self[i] if self[i]
+        i += 1
       end
-    else
-      decision = true
     end
-    decision
+    if selected_array.length == length
+      true
+    else
+      false
+    end
   end
 
   def my_any?(pattern = nil)
