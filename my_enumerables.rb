@@ -208,43 +208,28 @@ module Enumerable
     end
   end
 
-  # def my_inject(initial = nil, sym = nil)
-  #   modified_object = []
+  def my_inject(initial = nil, method = nil)
 
-  #   if block_given?
-  #     if initial
-  #       memo = initial
-  #       modified_object = my_map { |element| memo = yield memo, element }
-  #     else
-  #       memo = first
-  #       modified_object = to_a[1..-1].my_map { |element| memo = yield memo, element }
-  #     end
-  #   elsif !block_given? && sym
-  #     if initial
-  #       memo = initial
-  #       modified_object = memo
-  #     end
-  #   end
-  #   modified_object[-1]
-  # end
-
-  def my_injectt(init = nil, sym = nil)
+    modified_object = []
     if block_given?
-      if !init.nil?
-        num = init
-        my_each { |elem| num = yield(num, elem) }
+      if initial
+        memo = initial
+        modified_object = my_map { |element| memo = yield memo, element }
       else
-        num = first
-        to_a[1..-1].my_each { |elem| num = yield(num, elem) }
+        memo = first
+        modified_object = to_a[1..-1].my_map { |element| memo = yield memo, element }
       end
-    elsif !sym.nil?
-      num = init
-      my_each { |elem| num = num.send(sym, elem) }
-    elsif !init.nil?
-      num = first
-      to_a[1..-1].my_each { |elem| num = num.send(init, elem) }
+    elsif !block_given?
+      if initial && method
+        memo = initial
+        modified_object = my_map { |element| memo = memo.send(method, element) }
+      elsif initial
+        method = initial
+        memo = first
+        modified_object = to_a[1..-1].my_map { |element| memo = memo.send(method, element) }
+      end
     end
-    num
+    modified_object[-1]
   end
 
   def multiply_els(array)
