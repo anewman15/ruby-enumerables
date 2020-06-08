@@ -19,7 +19,7 @@ module Enumerable
 
     i = 0
     if block_given?
-      while i < length
+      while i < to_a.length
         modified_object << (yield self[i], i)
         i += 1
       end
@@ -128,12 +128,13 @@ module Enumerable
   end
 
   def my_map
+    object = to_a
     modified_object = []
 
     i = 0
     if block_given?
-      while i < length
-        modified_object << (yield self[i])
+      while i < to_a.length
+        modified_object << (yield object[i])
         i += 1
       end
       modified_object
@@ -166,7 +167,7 @@ module Enumerable
   end
 
   def multiply_els(array)
-    array.my_inject { |memo, item| memo * item }
+    array.my_inject(:*)
   end
 
   def my_map_proc(a_proc = nil)
