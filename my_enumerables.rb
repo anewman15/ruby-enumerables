@@ -63,9 +63,9 @@ module Enumerable
       end
     end
     if selected_array.length == length
-      true
+      decision = true
     else
-      false
+      decision = false
     end
   end
 
@@ -88,9 +88,9 @@ module Enumerable
       end
     end
     if selected_array.length > 0
-      true
+      decision = true
     else
-      false
+      decision = false
     end
   end
 
@@ -113,13 +113,13 @@ module Enumerable
       end
     end
     if selected_array.length == 0
-      true
+      decision = true
     else
-      false
+      decision = false
     end
   end
 
-  def my_count(*value)
+  def my_count(*args)
     count_array = []
 
     i = 0
@@ -128,9 +128,9 @@ module Enumerable
         count_array << self[i] if yield self[i]
         i += 1
       end
-    elsif !block_given?
+    elsif !block_given? && !args.empty?
       while i < length
-        count_array << self[i] if self[i] == value.first
+        count_array << self[i] if self[i] == args.first
         i += 1
       end
     else
