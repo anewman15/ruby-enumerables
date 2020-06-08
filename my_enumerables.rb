@@ -47,6 +47,7 @@ module Enumerable
   def my_all?(pattern = nil)
     decision = true if length.zero?
     selected_array = []
+    
     i = 0
     if block_given?
       selected_array = my_select { |element| yield element }
@@ -70,111 +71,72 @@ module Enumerable
 
   def my_any?(pattern = nil)
     decision = false if length.zero?
-
+    selected_array = []
+    
     i = 0
     if block_given?
-      while i < length
-        if yield self[i]
-          decision = true
-          break
-        else
-          decision = false
-          i += 1
-        end
-      end
+      selected_array = my_select { |element| yield element }
     elsif !block_given? && pattern
       while i < length
-        if pattern === self[i]
-          decision = true
-          break
-        else
-          decision = false
-          i += 1
-        end
+        selected_array << self[i] if pattern === self[i]
+        i += 1
       end
     elsif !block_given? && !pattern
       while i < length
-        if self[i]
-          decision = true
-          break
-        else
-          decision = false
-          i += 1
-        end
+        selected_array << self[i] if self[i]
+        i += 1
       end
-    else
-      decision = true
     end
-    decision
+    if selected_array.length > 0
+      true
+    else
+      false
+    end
   end
 
   def my_none?(pattern = nil)
     decision = true if length.zero?
-
+    selected_array = []
+    
     i = 0
     if block_given?
-      while i < length
-        if yield self[i]
-          decision = false
-          break
-        else
-          decision = true
-          i += 1
-        end
-      end
+      selected_array = my_select { |element| yield element }
     elsif !block_given? && pattern
       while i < length
-        if pattern === self[i]
-          decision = false
-          break
-        else
-          decision = true
-          i += 1
-        end
+        selected_array << self[i] if pattern === self[i]
+        i += 1
       end
     elsif !block_given? && !pattern
       while i < length
-        if self[i]
-          decision = false
-          break
-        else
-          decision = true
-          i += 1
-        end
+        selected_array << self[i] if self[i]
+        i += 1
       end
-    else
-      decision = true
     end
-    decision
+    if selected_array.length == 0
+      true
+    else
+      false
+    end
   end
 
-  def my_count(value = nil)
-    
+  def my_count(*value)
+    count_array = []
+
     i = 0
-    counter = 0
     if block_given?
       while i < length
-        if yield self[i]
-          counter += 1
-        else
-          counter
-        end
+        count_array << self[i] if yield self[i]
         i += 1
       end
-      counter
-    elsif !block_given? && value
+    elsif !block_given?
       while i < length
-        if self[i] == value
-          counter += 1
-        else
-          counter
-        end
+        count_array << self[i] if self[i] == value.first
         i += 1
       end
-      counter
     else
-      length
+      count_array = self
     end
+    counter = count_array.length
   end
 
   def my_map
