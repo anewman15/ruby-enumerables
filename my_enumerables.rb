@@ -45,9 +45,9 @@ module Enumerable
   end
 
   def my_all?(pattern = nil)
-    decision = true if length.zero?
+    true if length.zero?
     selected_array = []
-    
+
     i = 0
     if block_given?
       selected_array = my_select { |element| yield element }
@@ -62,17 +62,13 @@ module Enumerable
         i += 1
       end
     end
-    if selected_array.length == length
-      decision = true
-    else
-      decision = false
-    end
+    selected_array.length == length
   end
 
   def my_any?(pattern = nil)
-    decision = false if length.zero?
+    false if length.zero?
     selected_array = []
-    
+
     i = 0
     if block_given?
       selected_array = my_select { |element| yield element }
@@ -87,17 +83,13 @@ module Enumerable
         i += 1
       end
     end
-    if selected_array.length > 0
-      decision = true
-    else
-      decision = false
-    end
+    selected_array.length.positive?
   end
 
   def my_none?(pattern = nil)
-    decision = true if length.zero?
+    true if length.zero?
     selected_array = []
-    
+
     i = 0
     if block_given?
       selected_array = my_select { |element| yield element }
@@ -112,11 +104,7 @@ module Enumerable
         i += 1
       end
     end
-    if selected_array.length == 0
-      decision = true
-    else
-      decision = false
-    end
+    selected_array.length.zero?
   end
 
   def my_count(*args)
@@ -136,7 +124,7 @@ module Enumerable
     else
       count_array = self
     end
-    counter = count_array.length
+    count_array.length
   end
 
   def my_map
@@ -155,7 +143,6 @@ module Enumerable
   end
 
   def my_inject(initial = nil, method = nil)
-
     modified_object = []
     if block_given?
       if initial
