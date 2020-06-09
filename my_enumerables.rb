@@ -66,20 +66,21 @@ module Enumerable
   end
 
   def my_any?(pattern = nil)
-    false if length.zero?
+    arr = to_a
+    false if arr.length.zero?
     selected_array = []
 
     i = 0
     if block_given?
       selected_array = my_select { |element| yield element }
     elsif !block_given? && pattern
-      while i < length
-        selected_array << self[i] if pattern === self[i]
+      while i < arr.length
+        selected_array << arr[i] if pattern === arr[i]
         i += 1
       end
     elsif !block_given? && !pattern
-      while i < length
-        selected_array << self[i] if self[i]
+      while i < arr.length
+        selected_array << arr[i] if arr[i]
         i += 1
       end
     end
@@ -87,20 +88,21 @@ module Enumerable
   end
 
   def my_none?(pattern = nil)
-    true if length.zero?
+    arr = to_a
+    true if arr.length.zero?
     selected_array = []
 
     i = 0
     if block_given?
       selected_array = my_select { |element| yield element }
     elsif !block_given? && pattern
-      while i < length
-        selected_array << self[i] if pattern === self[i]
+      while i < arr.length
+        selected_array << arr[i] if pattern === arr[i]
         i += 1
       end
     elsif !block_given? && !pattern
-      while i < length
-        selected_array << self[i] if self[i]
+      while i < arr.length
+        selected_array << arr[i] if arr[i]
         i += 1
       end
     end
@@ -108,23 +110,26 @@ module Enumerable
   end
 
   def my_count(*args)
-    count_array = []
-
+    arr = is_a?(Array) ? self : to_a
+    count = 0
     i = 0
     if block_given?
-      while i < length
-        count_array << self[i] if yield self[i]
+      while i < arr.length
+        count += 1 if yield arr[i]
         i += 1
       end
     elsif !block_given? && !args.empty?
-      while i < length
-        count_array << self[i] if self[i] == args.first
+      while i < arr.length
+        count += 1 if arr[i] === args.first
         i += 1
       end
     else
-      count_array = self
+      while i < arr.length
+        count += 1 if arr[i]
+        i += 1
+      end
     end
-    count_array.length
+    count
   end
 
   def my_map
@@ -133,7 +138,7 @@ module Enumerable
 
     i = 0
     if block_given?
-      while i < to_a.length
+      while i < object.length
         modified_object << (yield object[i])
         i += 1
       end
@@ -144,6 +149,7 @@ module Enumerable
   end
 
   def my_inject(initial = nil, method = nil)
+    object = to_a
     modified_object = []
     if block_given?
       if initial
@@ -151,7 +157,7 @@ module Enumerable
         modified_object = my_map { |element| memo = yield memo, element }
       else
         memo = first
-        modified_object = to_a[1..-1].my_map { |element| memo = yield memo, element }
+        modified_object = object[1..-1].my_map { |element| memo = yield memo, element }
       end
     elsif !block_given?
       if initial && method
@@ -161,18 +167,22 @@ module Enumerable
         method = initial
         memo = first
         modified_object = to_a[1..-1].my_map { |element| memo = memo.send(method, element) }
+      else
+        memo = initial
+        modified_object = my_map { |element| memo = yield memo, element }
       end
     end
     modified_object[-1]
   end
 
   def my_map_proc(a_proc = nil)
+    object = to_a
     modified_object = []
 
     i = 0
     if a_proc
-      while i < length
-        modified_object << a_proc.call(self[i])
+      while i < object.length
+        modified_object << a_proc.call(object[i])
         i += 1
       end
     end
@@ -180,17 +190,18 @@ module Enumerable
   end
 
   def my_map_proc_block(a_proc = nil)
+    object = to_a
     modified_object = []
 
     i = 0
     if a_proc
-      while i < length
-        modified_object << a_proc.call(self[i])
+      while i < object.length
+        modified_object << a_proc.call(object[i])
         i += 1
       end
-    elsif block_given?
-      while i < length
-        modified_object << (yield self[i])
+    elsif a_proc.nil? && block_given?
+      while i < object.length
+        modified_object << (yield object[i])
         i += 1
       end
     end
@@ -201,3 +212,5 @@ end
 def multiply_els(array)
   array.my_inject(:*)
 end
+
+rubocop:enable Style/CaseEquality Metrics/CyclomaticComplexity Metrics/PerceivedComplexity
