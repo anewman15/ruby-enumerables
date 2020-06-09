@@ -1,11 +1,10 @@
 module Enumerable
   def my_each
-    modified_object = []
-
+    arr = to_a
     i = 0
     if block_given?
-      while i < length
-        modified_object << (yield self[i])
+      while i < arr.length
+        yield arr[i]
         i += 1
       end
       self
@@ -15,12 +14,11 @@ module Enumerable
   end
 
   def my_each_with_index
-    modified_object = []
-
+    arr = to_a
     i = 0
     if block_given?
-      while i < to_a.length
-        modified_object << (yield self[i], i)
+      while i < arr.length
+        yield arr[i], i
         i += 1
       end
       self
@@ -30,12 +28,13 @@ module Enumerable
   end
 
   def my_select
+    arr = to_a
     modified_object = []
 
     i = 0
     if block_given?
-      while i < length
-        modified_object << self[i] if (yield self[i]) == true
+      while i < arr.length
+        modified_object << arr[i] if (yield arr[i]) == true
         i += 1
       end
       modified_object
@@ -45,24 +44,25 @@ module Enumerable
   end
 
   def my_all?(pattern = nil)
-    true if length.zero?
+    arr = to_a
+    true if arr.length.zero?
     selected_array = []
 
     i = 0
     if block_given?
       selected_array = my_select { |element| yield element }
     elsif !block_given? && pattern
-      while i < length
-        selected_array << self[i] if pattern === self[i]
+      while i < arr.length
+        selected_array << arr[i] if pattern === arr[i]
         i += 1
       end
     elsif !block_given? && !pattern
-      while i < length
-        selected_array << self[i] if self[i]
+      while i < arr.length
+        selected_array << arr[i] if arr[i]
         i += 1
       end
     end
-    selected_array.length == length
+    selected_array.length == arr.length
   end
 
   def my_any?(pattern = nil)
@@ -166,10 +166,6 @@ module Enumerable
     modified_object[-1]
   end
 
-  def multiply_els(array)
-    array.my_inject(:*)
-  end
-
   def my_map_proc(a_proc = nil)
     modified_object = []
 
@@ -200,4 +196,8 @@ module Enumerable
     end
     modified_object
   end
+end
+
+def multiply_els(array)
+  array.my_inject(:*)
 end
