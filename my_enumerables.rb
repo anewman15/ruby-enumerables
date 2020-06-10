@@ -132,20 +132,25 @@ module Enumerable
     count
   end
 
-  def my_map
+  def my_map(a_proc = nil)
     object = to_a
     modified_object = []
 
     i = 0
-    if block_given?
+    if a_proc
+      while i < object.length
+        modified_object << a_proc.call(object[i])
+        i += 1
+      end
+    elsif a_proc.nil? && block_given?
       while i < object.length
         modified_object << (yield object[i])
         i += 1
       end
-      modified_object
     else
-      to_enum
+      modified_object = to_enum
     end
+    modified_object
   end
 
   def my_inject(initial = nil, method = nil)
@@ -173,39 +178,6 @@ module Enumerable
       end
     end
     modified_object[-1]
-  end
-
-  def my_map_proc(a_proc = nil)
-    object = to_a
-    modified_object = []
-
-    i = 0
-    if a_proc
-      while i < object.length
-        modified_object << a_proc.call(object[i])
-        i += 1
-      end
-    end
-    modified_object
-  end
-
-  def my_map_proc_block(a_proc = nil)
-    object = to_a
-    modified_object = []
-
-    i = 0
-    if a_proc
-      while i < object.length
-        modified_object << a_proc.call(object[i])
-        i += 1
-      end
-    elsif a_proc.nil? && block_given?
-      while i < object.length
-        modified_object << (yield object[i])
-        i += 1
-      end
-    end
-    modified_object
   end
 end
 
